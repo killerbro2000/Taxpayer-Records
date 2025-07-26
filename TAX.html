@@ -2,7 +2,6 @@
 <html>
 <script src="https://console.firebase.google.com/u/0/project/taxpayer-records-manager/database/taxpayer-records-manager-default-rtdb/data/~2F"></script>
 <script src="https://console.firebase.google.com/u/0/project/taxpayer-records-manager/database/taxpayer-records-manager-default-rtdb/data/~2F"></script>
-<script src="FireBase.js"></script>
 <head>
   <meta charset="UTF-8">
   <title>Taxpayer Records Manager</title>
@@ -403,11 +402,6 @@ function showAllStatuses() {
     closePopup();
     filterRecords();
   }
-
-  function saveRecord(record) {
-    const recordId = Date.now(); // unique key
-    firebase.database().ref("records/" + recordId).set(record);
-    }
 
   function deleteRecord(i) {
     if (confirm("Are you sure you want to delete this record?")) {
