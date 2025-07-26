@@ -6,6 +6,53 @@
   <meta charset="UTF-8">
   <title>Taxpayer Records Manager</title>
   <style>
+/* Sleek table container */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+}
+
+/* Header style */
+th {
+  background-color: #f5f5f5;
+  padding: 12px;
+  text-align: left;
+  border-bottom: 2px solid #ddd;
+  font-weight: bold;
+}
+
+/* Fitted row styling */
+td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #eee;
+  font-size: 0.95em;
+}
+
+/* Hover effect for rows */
+tr:hover {
+  background-color: #f9f9f9;
+}
+
+/* Clean button styling */
+button {
+  padding: 5px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9em;
+  cursor: pointer;
+}
+
+button.edit {
+  background-color: #4CAF50;
+  color: white;
+}
+
+button.delete {
+  background-color: #f44336;
+  color: red;
+}
+
 .copy-cell {
   cursor: pointer;
   padding: 6px;
@@ -155,6 +202,19 @@ input { padding: 6px; margin-top: 5px; width: 250px; }
   cursor: pointer;
 }
 
+.add-btn {
+  display: inline-block;
+  background: #28a745;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  float: right; /* 👈 Moves button to the left */
+  margin-top: 10px;
+}
+
 .tab-btn.active {
   background-color: #42a5f5; /* highlighted blue */
   color: white;
@@ -180,9 +240,8 @@ input { padding: 6px; margin-top: 5px; width: 250px; }
 <button class="tab-btn Active-tab" onclick="setStatusFilter('Active')">Active</button>
 <button class="tab-btn Inactive-tab" onclick="setStatusFilter('Inactive')">Inactive</button>
 <button class="tab-btn Archived-tab" onclick="setStatusFilter('Archived')">Archived</button>
+<button class="add-btn" onclick="openAddPopup()">Add Record</button>
 </div>
-
-<button onclick="openAddPopup()">Add Record</button>
 
 <!-- Table -->
 <table>
@@ -398,7 +457,7 @@ function showAllStatuses() {
       records.push(newRecord);
     }
 
-    localStorage.setItem("newRecords", JSON.stringify(records));
+    localStorage.setItem("taxRecords", JSON.stringify(records));
     closePopup();
     filterRecords();
   }
