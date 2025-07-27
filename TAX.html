@@ -277,63 +277,6 @@ input { padding: 6px; margin-top: 5px; width: 250px; }
 </head>
 <body>
 
-<div class="top-bar">
-<div id="loginScreen" style="
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: silver;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-">
-  <div style="
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.2);
-    width: 300px;
-    text-align: center;
-  ">
-    <h2>(IN DEVELOPMENT)</h2>
-    <h2>Login</h2>
-    <input type="text" id="usernameInput" placeholder="Username" style="width: 100%; margin-bottom: 10px; padding: 8px;" />
-    <input type="password" id="passwordInput" placeholder="Password" style="width: 100%; margin-bottom: 10px; padding: 8px;" />
-    <button onclick="validateLogin()" style="padding: 10px 20px; font-weight: bold; background: teal; color: white; border: none; border-radius: 6px;">Login</button>
-<button onclick="showChangePassword()" style="padding: 8px 20px; background: #555; color: white; border: none; border-radius: 6px; margin-top: 10px;">Change Password</button>
-    <p id="loginError" style="color: red; margin-top: 10px; display: none;">Invalid credentials</p>
-  </div>
-</div>
-<div id="changePasswordPopup" style="
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0,0,0,0.4);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 3000;
-">
-  <div style="
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    width: 320px;
-    text-align: center;
-">
-    <h3>Change Password</h3>
-    <input type="password" id="oldPassword" placeholder="Old password" style="width: 100%; margin-bottom: 10px; padding: 8px;" />
-    <input type="password" id="newPassword" placeholder="New password" style="width: 100%; margin-bottom: 10px; padding: 8px;" />
-    <button onclick="changePassword()" style="padding: 8px 16px; background: teal; color: white; border: none; border-radius: 6px;">Confirm</button>
-    <button onclick="closeChangePopup()" style="padding: 8px 16px; background: #999; color: white; border: none; border-radius: 6px; margin-left: 8px;">Cancel</button>
-    <p id="passwordChangeMsg" style="color: red; margin-top: 10px; display: none;"></p>
-  </div>
-</div>
-
 <h2>Taxpayer Record Manager</h2>
 
 <!-- Search & Tabs -->
@@ -426,12 +369,23 @@ input { padding: 6px; margin-top: 5px; width: 250px; }
 
   if (selectedBtn) {
     const highlightClass = {
+      "All": "all-tab",
       "Active": "active-tab",
       "Inactive": "inactive-tab",
       "Archived": "archived-tab",
     }[status];
     selectedBtn.classList.add(highlightClass);
   }
+}
+
+function filterTab(status) {
+  const allRecords = JSON.parse(localStorage.getItem("records")) || [];
+
+  const filtered = status === "All"
+    ? allRecords
+    : allRecords.filter(r => r.status === status);
+
+  renderTable(filtered);
 }
 
   function filterRecords() {
@@ -475,6 +429,20 @@ input { padding: 6px; margin-top: 5px; width: 250px; }
     `;
     tbody.appendChild(row);
   });
+}
+
+function showAllStatuses() {
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelector('.All-tab')?.classList.add('active');
+
+  const allRecords = JSON.parse(localStorage.getItem("records")) || [];
+
+  // Include all records where status is Active, Inactive, or Archived
+  const filtered = allRecords.filter(r =>
+    ["Active", "Inactive", "Archived"].includes(r.status)
+  );
+
+  renderTable(filtered);
 }
 
   function openAddPopup() {
@@ -557,54 +525,12 @@ function getRecordsToSync() {
     filterRecords();
   }
 
-function validateLogin() {
-    const username = document.getElementById('usernameInput').value.trim();
-    const password = document.getElementById('passwordInput').value.trim();
-
-    const storedPassword = localStorage.getItem('userPassword') || '1234';
-
-    if (username === 'admin' && password === storedPassword) {
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('loginError').style.display = 'none';
-    } else {
-      document.getElementById('loginError').style.display = 'block';
-      document.getElementById('loginError').classList.add('glow');
-      setTimeout(() => {
-      document.getElementById('loginError').classList.remove('glow');
-     }, 800);
-
-    }
-  }
-
-  function showChangePassword() {
-    document.getElementById('changePasswordPopup').style.display = 'flex';
-  }
-
-  function closeChangePopup() {
-    document.getElementById('changePasswordPopup').style.display = 'none';
-  }
-
-  function changePassword() {
-    const oldPass = document.getElementById('oldPassword').value;
-    const newPass = document.getElementById('newPassword').value;
-    const storedPassword = localStorage.getItem('userPassword') || '1234';
-
-    if (oldPass === storedPassword) {
-      localStorage.setItem('userPassword', newPass);
-      document.getElementById('passwordChangeMsg').style.color = 'green';
-      document.getElementById('passwordChangeMsg').innerText = 'Password updated!';
-    } else {
-      document.getElementById('passwordChangeMsg').style.color = 'red';
-      document.getElementById('passwordChangeMsg').innerText = 'Wrong old password.';
-      document.getElementById('passwordChangeMsg').classList.add('glow');
-      setTimeout(() => {
-      document.getElementById('passwordChangeMsg').classList.remove('glow');
-     }, 800);
-
-    }
-
-    document.getElementById('passwordChangeMsg').style.display = 'block';
-  }
+function highlightActiveTab(tabId) {
+  document.querySelectorAll(".tab-button").forEach(btn => {
+    btn.classList.remove("active");
+  });
+  document.querySelector(`#${tabId}`).classList.add("active");
+}
 
 function showToast(message) {
   const toast = document.createElement("div");
