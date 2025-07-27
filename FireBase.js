@@ -9,21 +9,6 @@ const firebaseConfig = {
   measurementId: "G-ZEVXHM0YZ1"
 };
 
-// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-
-// Reference to Realtime Database
 const db = firebase.database();
 
-function saveRecord(record) {
-  const recordId = Date.now(); // unique key
-  firebase.database().ref("records/" + recordId).set(record);
-}
-
-function fetchAllRecords() {
-  firebase.database().ref("records").once("value", snapshot => {
-    const data = snapshot.val();
-    const records = Object.values(data || {});
-    renderAllRows(records);
-  });
-}
