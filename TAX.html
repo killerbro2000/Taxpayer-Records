@@ -426,23 +426,12 @@ input { padding: 6px; margin-top: 5px; width: 250px; }
 
   if (selectedBtn) {
     const highlightClass = {
-      "All": "all-tab",
       "Active": "active-tab",
       "Inactive": "inactive-tab",
       "Archived": "archived-tab",
     }[status];
     selectedBtn.classList.add(highlightClass);
   }
-}
-
-function filterTab(status) {
-  const allRecords = JSON.parse(localStorage.getItem("records")) || [];
-
-  const filtered = status === "All"
-    ? allRecords
-    : allRecords.filter(r => r.status === status);
-
-  renderTable(filtered);
 }
 
   function filterRecords() {
@@ -486,20 +475,6 @@ function filterTab(status) {
     `;
     tbody.appendChild(row);
   });
-}
-
-function showAllStatuses() {
-  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-  document.querySelector('.All-tab')?.classList.add('active');
-
-  const allRecords = JSON.parse(localStorage.getItem("records")) || [];
-
-  // Include all records where status is Active, Inactive, or Archived
-  const filtered = allRecords.filter(r =>
-    ["Active", "Inactive", "Archived"].includes(r.status)
-  );
-
-  renderTable(filtered);
 }
 
   function openAddPopup() {
@@ -581,13 +556,6 @@ function getRecordsToSync() {
     closePopup();
     filterRecords();
   }
-
-function highlightActiveTab(tabId) {
-  document.querySelectorAll(".tab-button").forEach(btn => {
-    btn.classList.remove("active");
-  });
-  document.querySelector(`#${tabId}`).classList.add("active");
-}
 
 function validateLogin() {
     const username = document.getElementById('usernameInput').value.trim();
